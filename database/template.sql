@@ -1,178 +1,283 @@
 -- =====================================================
--- Database: Saniikos Dashboard (Refactored)
+-- Database: Intranet Tools
 -- =====================================================
 
-CREATE DATABASE IF NOT EXISTS saniikos_dashboard
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE IF NOT EXISTS intranet_tools CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE saniikos_dashboard;
+USE intranet_tools;
 
--- =========================
--- 1. Roles
--- =========================
+-- =====================================================
+-- Departments
+-- =====================================================
+
+CREATE TABLE departments (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    system BOOLEAN NOT NULL DEFAULT FALSE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE = InnoDB;
+
+-- =====================================================
+-- Roles
+-- =====================================================
+
 CREATE TABLE roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE,
-    description TEXT
-);
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    system BOOLEAN NOT NULL DEFAULT FALSE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE = InnoDB;
 
--- =========================
--- 2. Users
--- =========================
+-- =====================================================
+-- Users
+-- =====================================================
+
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    department VARCHAR(50),
-    role_id INT,
+    last_name VARCHAR(100) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(150) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
+    department_id INT NULL,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    last_login TIMESTAMP NULL,
     deleted_at TIMESTAMP NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_users_role
-        FOREIGN KEY (role_id) REFERENCES roles(id)
-        ON DELETE SET NULL
-);
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_users_department FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE SET NULL
+) ENGINE = InnoDB;
 
-CREATE INDEX idx_users_role ON users(role_id);
+CREATE INDEX idx_users_department ON users (department_id);
 
--- =========================
--- 3. App Visibility (catalog)
--- =========================
-CREATE TABLE app_visibilities (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE
-);
+CREATE INDEX idx_users_active ON users (active);
 
--- =========================
--- 4. Apps
--- =========================
-CREATE TABLE apps (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL UNIQUE,
-    section VARCHAR(50) NOT NULL,
-    description TEXT,
-    version VARCHAR(20) NOT NULL,
-    visibility_id INT,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP,
-    CONSTRAINT fk_apps_visibility
-        FOREIGN KEY (visibility_id) REFERENCES app_visibilities(id)
-        ON DELETE SET NULL
-);
+CREATE INDEX idx_users_department_active ON users (department_id, active);
 
-CREATE INDEX idx_apps_visibility ON apps(visibility_id);
+-- =====================================================
+-- User Roles
+-- =====================================================
 
--- =========================
--- 5. Request Priorities (catalog)
--- =========================
-CREATE TABLE request_priorities (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE
-);
-
--- =========================
--- 6. Request Statuses (catalog)
--- =========================
-CREATE TABLE request_statuses (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL UNIQUE
-);
-
--- =========================
--- 7. Requests (Help Desk)
--- =========================
-CREATE TABLE requests (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE user_roles (
     user_id INT NOT NULL,
-    assigned_to INT NULL,
-    title VARCHAR(150) NOT NULL,
-    description TEXT NOT NULL,
-    priority_id INT,
-    status_id INT,
+    role_id INT NOT NULL,
+    PRIMARY KEY (user_id, role_id),
+    CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_user_roles_role FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+CREATE INDEX idx_user_roles_role ON user_roles (role_id);
+
+
+-- =====================================================
+-- Tool Categories
+-- =====================================================
+
+CREATE TABLE tool_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    system BOOLEAN NOT NULL DEFAULT FALSE,
+    active BOOLEAN NOT NULL DEFAULT TRUE,
+    display_order INT NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE = InnoDB;
 
-    CONSTRAINT fk_requests_user
-        FOREIGN KEY (user_id) REFERENCES users(id)
-        ON DELETE CASCADE,
+CREATE INDEX idx_tool_categories_order ON tool_categories (display_order);
 
-    CONSTRAINT fk_requests_assigned
-        FOREIGN KEY (assigned_to) REFERENCES users(id)
-        ON DELETE SET NULL,
+-- =====================================================
+-- Tool Visibilities
+-- =====================================================
 
-    CONSTRAINT fk_requests_priority
-        FOREIGN KEY (priority_id) REFERENCES request_priorities(id)
-        ON DELETE SET NULL,
+CREATE TABLE tool_visibilities (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE = InnoDB;
 
-    CONSTRAINT fk_requests_status
-        FOREIGN KEY (status_id) REFERENCES request_statuses(id)
-        ON DELETE SET NULL
-);
+-- =====================================================
+-- Tools
+-- =====================================================
 
-CREATE INDEX idx_requests_user ON requests(user_id);
-CREATE INDEX idx_requests_assigned ON requests(assigned_to);
-CREATE INDEX idx_requests_priority ON requests(priority_id);
-CREATE INDEX idx_requests_status ON requests(status_id);
+CREATE TABLE tools (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    route VARCHAR(255) NOT NULL UNIQUE,
+    icon VARCHAR(255),
+    version VARCHAR(30) NOT NULL DEFAULT '1.0.0',
+    category_id INT NOT NULL,
+    visibility_id INT NOT NULL,
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    display_order INT NOT NULL DEFAULT 0,
+    frontend_only BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_tools_category FOREIGN KEY (category_id) REFERENCES tool_categories (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_tools_visibility FOREIGN KEY (visibility_id) REFERENCES tool_visibilities (id) ON DELETE RESTRICT
+) ENGINE = InnoDB;
 
--- =========================
--- 8. User Activity (structured)
--- =========================
+CREATE INDEX idx_tools_category ON tools (category_id);
+
+CREATE INDEX idx_tools_visibility ON tools (visibility_id);
+
+CREATE INDEX idx_tools_enabled ON tools (enabled);
+
+CREATE INDEX idx_tools_enabled_order ON tools (enabled, display_order);
+
+-- =====================================================
+-- Tool Permissions
+-- =====================================================
+
+CREATE TABLE tool_permissions (
+    tool_id INT NOT NULL,
+    role_id INT NOT NULL,
+    PRIMARY KEY (tool_id, role_id),
+    CONSTRAINT fk_tool_permissions_tool FOREIGN KEY (tool_id) REFERENCES tools (id) ON DELETE CASCADE,
+    CONSTRAINT fk_tool_permissions_role FOREIGN KEY (role_id) REFERENCES roles (id) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+CREATE INDEX idx_tool_permissions_role ON tool_permissions (role_id);
+
+CREATE INDEX idx_tool_permissions_tool ON tool_permissions (tool_id);
+
+-- =====================================================
+-- Tool Departments (Tools <-> Departments)
+-- =====================================================
+
+CREATE TABLE tool_departments (
+    tool_id INT NOT NULL,
+    department_id INT NOT NULL,
+    PRIMARY KEY (tool_id, department_id),
+    CONSTRAINT fk_tool_departments_tool FOREIGN KEY (tool_id) REFERENCES tools (id) ON DELETE CASCADE,
+    CONSTRAINT fk_tool_departments_department FOREIGN KEY (department_id) REFERENCES departments (id) ON DELETE CASCADE
+) ENGINE = InnoDB;
+
+CREATE INDEX idx_tool_departments_department ON tool_departments (department_id);
+
+CREATE INDEX idx_tool_departments_tool ON tool_departments (tool_id);
+
+-- =====================================================
+-- User Activity
+-- =====================================================
+
 CREATE TABLE user_activity (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    action_type VARCHAR(50) NOT NULL,
-    entity_type VARCHAR(50),
+    tool_id INT NULL,
+    action_code VARCHAR(100) NOT NULL,
+    entity_type VARCHAR(100),
     entity_id INT,
+    ip_address VARCHAR(45),
+    user_agent TEXT,
     metadata JSON,
+    success BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_activity_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    CONSTRAINT fk_activity_tool FOREIGN KEY (tool_id) REFERENCES tools (id) ON DELETE SET NULL
+) ENGINE = InnoDB;
 
-    CONSTRAINT fk_activity_user
-        FOREIGN KEY (user_id) REFERENCES users(id)
-        ON DELETE CASCADE
-);
+CREATE INDEX idx_activity_user ON user_activity (user_id);
 
-CREATE INDEX idx_activity_user ON user_activity(user_id);
-CREATE INDEX idx_activity_entity ON user_activity(entity_type, entity_id);
+CREATE INDEX idx_activity_tool ON user_activity (tool_id);
 
--- =========================
--- 9. Request Status History (audit)
--- =========================
-CREATE TABLE request_status_history (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    request_id INT NOT NULL,
-    status_id INT,
-    changed_by INT,
-    changed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+CREATE INDEX idx_activity_entity ON user_activity (entity_type, entity_id);
 
-    FOREIGN KEY (request_id) REFERENCES requests(id) ON DELETE CASCADE,
-    FOREIGN KEY (status_id) REFERENCES request_statuses(id) ON DELETE SET NULL,
-    FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE SET NULL
-);
-
-CREATE INDEX idx_history_request ON request_status_history(request_id);
+CREATE INDEX idx_activity_created ON user_activity (created_at);
 
 -- =====================================================
--- Seed data (initial catalogs)
+-- Seed Data
 -- =====================================================
 
-INSERT INTO app_visibilities (name) VALUES
-('Public Utility'),
-('Internal'),
-('Restricted');
+-- -------------------------
+-- Departments
+-- -------------------------
 
-INSERT INTO request_priorities (name) VALUES
-('Low'),
-('Normal'),
-('High'),
-('Urgent');
+INSERT INTO
+    departments (code, name, description, system)
+VALUES (
+        'IT',
+        'Information Technology',
+        'Default department',
+        TRUE
+    );
 
-INSERT INTO request_statuses (name) VALUES
-('Pending'),
-('In Progress'),
-('Closed');
+-- -------------------------
+-- Roles
+-- -------------------------
+
+INSERT INTO
+    roles (
+        code,
+        name,
+        description,
+        system
+    )
+VALUES (
+        'ADMIN',
+        'Administrator',
+        'Full access to the platform',
+        TRUE
+    );
+
+-- -------------------------
+-- Tool Visibilities
+-- -------------------------
+
+INSERT INTO
+    tool_visibilities (code, name, description)
+VALUES (
+        'GLOBAL',
+        'Global',
+        'Available for all authenticated users'
+    ),
+    (
+        'DEPARTMENT',
+        'Department Restricted',
+        'Available only for selected departments'
+    );
+
+-- -------------------------
+-- Administrator User
+-- -------------------------
+
+INSERT INTO
+    users (
+        first_name,
+        last_name,
+        username,
+        email,
+        password_hash,
+        department_id,
+        active
+    )
+SELECT 'System', 'Administrator', 'admin', 'admin@saniikos.com', '$2a$12$QhIIP48TIHrhbGVs9wIHlegHV1dJDzTRGHfwbVio8NNSfCSuHGLa2', d.id, TRUE
+FROM departments d
+WHERE
+    d.code = 'IT';
+
+-- -------------------------
+-- Administrator Role
+-- -------------------------
+
+INSERT INTO
+    user_roles (user_id, role_id)
+SELECT u.id, r.id
+FROM users u
+    JOIN roles r ON r.code = 'ADMIN'
+WHERE
+    u.username = 'admin';
