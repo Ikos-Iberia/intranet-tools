@@ -1,0 +1,76 @@
+package com.saniikos.backend.autorization.security;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfig {
+
+    @Autowired
+    private AuthEntryPointJwt unauthorizedHandler;
+
+    @Bean
+    AuthTokenFilter authenticationJwtTokenFilter() {
+        return new AuthTokenFilter();
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
+
+        http.cors(cors -> cors.configurationSource(request -> {
+
+            CorsConfiguration configuration = new CorsConfiguration();
+
+            configuration.addAllowedOrigin("*");
+            configuration.addAllowedMethod(HttpMethod.GET);
+            configuration.addAllowedMethod(HttpMethod.POST);
+            configuration.addAllowedMethod(HttpMethod.DELETE);
+            configuration.addAllowedMethod(HttpMethod.PATCH);
+            configuration.addAllowedMethod(HttpMethod.PUT);
+            configuration.addAllowedMethod(HttpMethod.OPTIONS);
+            configuration.setAllowedHeaders(List.of("*"));
+
+            return configuration;
+        })).csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(unauthorizedHandler))
+                .sessionManagement(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(getAuthWhitelist()).permitAll()
+                        .anyRequest().authenticated())
+                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    private String[] getAuthWhitelist() {
+        List<String> authWhitelist = new ArrayList<>();
+
+        authWhitelist.add("/users/login");
+
+        return authWhitelist.toArray(String[]::new);
+    }
+
+}
