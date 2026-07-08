@@ -58,7 +58,7 @@ public class UserActivity {
     private String userAgent;
 
     @Column(columnDefinition = "json")
-    private JsonNode metadata;
+    private String metadata;
 
     @Column(nullable = false)
     private Boolean success = true;
