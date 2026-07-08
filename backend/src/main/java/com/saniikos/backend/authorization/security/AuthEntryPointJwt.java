@@ -1,6 +1,5 @@
-package com.saniikos.backend.autorization.security;
+package com.saniikos.backend.authorization.security;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -16,20 +15,24 @@ import java.io.IOException;
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
     @Override
-    public void commence(HttpServletRequest request, HttpServletResponse response,
-            AuthenticationException authException) throws IOException, ServletException {
+    public void commence(HttpServletRequest request,
+                         HttpServletResponse response,
+                         AuthenticationException authException)
+            throws IOException {
 
-        log.error("No authorized access: {}", authException.getMessage());
+        log.warn("Unauthorized request: {}", authException.getMessage());
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
-        String errorMessage = authException.getMessage() != null ? authException.getMessage() : "Unauthorized";
+        String errorMessage = authException.getMessage() != null
+                ? authException.getMessage()
+                : "Unauthorized";
 
         response.getWriter().write(String.format(
-                "{\"error\": \"%s\", \"status\": %d}",
+                "{\"error\":\"%s\",\"status\":%d}",
                 errorMessage,
                 HttpStatus.UNAUTHORIZED.value()));
     }
-
 }
