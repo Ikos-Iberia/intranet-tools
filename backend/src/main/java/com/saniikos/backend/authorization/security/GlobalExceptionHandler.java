@@ -1,4 +1,4 @@
-package com.saniikos.backend.autorization.security;
+package com.saniikos.backend.authorization.security;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
