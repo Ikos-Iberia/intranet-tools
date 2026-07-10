@@ -74,7 +74,9 @@ public class WebSecurityConfig {
         authWhitelist.add("/api/tool-visibilities/**");
         authWhitelist.add("/api/tool-departments/**");
         authWhitelist.add("/api/tool-permissions/**");
-        // TODO Revisar esto, ya que solo /users/login deberia ser publico, el resto deberia requerir autenticacion y permisos de usuario
+        authWhitelist.add("/api/users/**");
+        // TODO Revisar esto, ya que solo /users/login deberia ser publico, el resto
+        // deberia requerir autenticacion y permisos de usuario
 
         return authWhitelist.toArray(String[]::new);
     }
