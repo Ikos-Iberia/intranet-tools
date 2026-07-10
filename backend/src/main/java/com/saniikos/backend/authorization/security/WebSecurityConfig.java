@@ -71,6 +71,7 @@ public class WebSecurityConfig {
         authWhitelist.add("/api/roles/**");
         authWhitelist.add("/api/tool-categories/**");
         authWhitelist.add("/api/tools/**");
+        authWhitelist.add("/api/tool-visibilities/**");
         // TODO Revisar esto, ya que solo /users/login deberia ser publico, el resto deberia requerir autenticacion y permisos de usuario
 
         return authWhitelist.toArray(String[]::new);
