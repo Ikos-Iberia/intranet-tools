@@ -20,6 +20,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,9 +38,15 @@ public class JwtUtils {
 	private final ObjectMapper objectMapper;
 
 	private Key getSigningKey() {
-		return new SecretKeySpec(
-				jwtSecret.getBytes(StandardCharsets.UTF_8),
-				SignatureAlgorithm.HS512.getJcaName());
+
+		byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
+
+		if (keyBytes.length < 64) {
+			throw new IllegalArgumentException(
+					"JWT secret must have at least 64 bytes for HS512");
+		}
+
+		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
 	public LoginResponseDTO generateJwtTokens(UserInfo userInfo) throws Exception {
