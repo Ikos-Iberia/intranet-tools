@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.saniikos.backend.services.DepartmentService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.saniikos.backend.dto.department.DepartmentResponse;
 import com.saniikos.backend.dto.department.DepartmentRequest;
 
@@ -20,6 +24,7 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
+@Tag(name = "Departments", description = "Department management and organization endpoints")
 @RestController
 @RequestMapping("/api/departments")
 public class DepartmentController {
@@ -30,24 +35,28 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
+    @Operation(summary = "Get all departments")
     @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<DepartmentResponse> getAll() {
         return departmentService.findAll();
     }
 
+    @Operation(summary = "Get a department by its ID")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public DepartmentResponse getById(@PathVariable Long id) {
         return departmentService.findById(id);
     }
 
+    @Operation(summary = "Get a department by its code")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/code/{code}")
     public DepartmentResponse getByCode(@PathVariable String code) {
         return departmentService.findByCode(code);
     }
 
+    @Operation(summary = "Create a new department")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<DepartmentResponse> create(
@@ -58,6 +67,7 @@ public class DepartmentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(summary = "Update an existing department")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public DepartmentResponse update(
@@ -67,6 +77,7 @@ public class DepartmentController {
         return departmentService.update(id, request);
     }
 
+    @Operation(summary = "Delete a department")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
