@@ -68,6 +68,10 @@ public class WebSecurityConfig {
 
         authWhitelist.add("/users/login");
 
+        authWhitelist.add("/v3/api-docs/**");
+        authWhitelist.add("/swagger-ui/**");
+        authWhitelist.add("/swagger-ui.html");
+
         return authWhitelist.toArray(String[]::new);
     }
 
