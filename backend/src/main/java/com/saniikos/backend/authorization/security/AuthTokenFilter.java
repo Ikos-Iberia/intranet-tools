@@ -45,7 +45,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
                 List<GrantedAuthority> authorities = userInfo.getRoles()
                         .stream()
-                        .map(role -> (GrantedAuthority) new SimpleGrantedAuthority("ROLE_" + role))
+                        .map(role -> (GrantedAuthority) new SimpleGrantedAuthority(role))
                         .toList();
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
