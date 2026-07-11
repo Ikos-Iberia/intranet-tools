@@ -11,8 +11,12 @@ import com.saniikos.backend.dto.useractivity.UserActivityRequest;
 import com.saniikos.backend.dto.useractivity.UserActivityResponse;
 import com.saniikos.backend.services.UserActivityService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
 
+@Tag(name = "User Activities", description = "User activity management endpoints")
 @RestController
 @RequestMapping("/api/user-activities")
 public class UserActivityController {
@@ -25,6 +29,7 @@ public class UserActivityController {
         this.userActivityService = userActivityService;
     }
 
+    @Operation(summary = "Get all user activities")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<UserActivityResponse> findAll() {
@@ -32,6 +37,7 @@ public class UserActivityController {
         return userActivityService.findAll();
     }
 
+    @Operation(summary = "Get user activity by ID")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public UserActivityResponse findById(
@@ -40,6 +46,7 @@ public class UserActivityController {
         return userActivityService.findById(id);
     }
 
+    @Operation(summary = "Get user activities by user ID")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/user/{userId}")
     public List<UserActivityResponse> findByUser(
@@ -48,6 +55,7 @@ public class UserActivityController {
         return userActivityService.findByUser(userId);
     }
 
+    @Operation(summary = "Get user activities by tool ID")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/tool/{toolId}")
     public List<UserActivityResponse> findByTool(
@@ -56,6 +64,7 @@ public class UserActivityController {
         return userActivityService.findByTool(toolId);
     }
 
+    @Operation(summary = "Get user activities by action code")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/action/{actionCode}")
     public List<UserActivityResponse> findByActionCode(
@@ -64,6 +73,7 @@ public class UserActivityController {
         return userActivityService.findByActionCode(actionCode);
     }
 
+    @Operation(summary = "Get user activities by success status")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/success/{success}")
     public List<UserActivityResponse> findBySuccess(
@@ -72,6 +82,7 @@ public class UserActivityController {
         return userActivityService.findBySuccess(success);
     }
 
+    @Operation(summary = "Get user activities by date range")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/date-range")
     public List<UserActivityResponse> findByDateRange(
@@ -82,6 +93,7 @@ public class UserActivityController {
         return userActivityService.findByDateRange(start, end);
     }
 
+    @Operation(summary = "Create a new user activity")
     @PreAuthorize("isAuthenticated()")
     @PostMapping
     public UserActivityResponse create(
