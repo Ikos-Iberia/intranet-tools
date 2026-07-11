@@ -10,8 +10,12 @@ import com.saniikos.backend.authorization.UserInfo;
 import com.saniikos.backend.authorization.security.JwtUtils;
 import com.saniikos.backend.services.AuthService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import jakarta.validation.Valid;
 
+@Tag(name = "Authentication", description = "User authentication and session management")
 @RestController
 @RequestMapping("/users")
 public class AuthController {
@@ -24,6 +28,7 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @Operation(summary = "Authenticate user and return token")
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(
             @Valid @RequestBody LoginRequestDTO request) {
@@ -33,6 +38,7 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Get current authenticated user information")
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/me")
     public ResponseEntity<UserInfo> me() {
