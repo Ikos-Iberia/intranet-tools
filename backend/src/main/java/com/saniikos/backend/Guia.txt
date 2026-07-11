@@ -1,8 +1,0 @@
-✅ Terminar Login (AuthService, AuthController)
-✅ Probar JWT en Postman
-✅ Proteger todos los endpoints
-✅ Crear endpoint del usuario actual:
-
-
-
-Esto es lo que me queda
