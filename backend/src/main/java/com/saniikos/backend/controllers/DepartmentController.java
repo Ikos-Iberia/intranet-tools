@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,21 +30,25 @@ public class DepartmentController {
         this.departmentService = departmentService;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<DepartmentResponse> getAll() {
         return departmentService.findAll();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public DepartmentResponse getById(@PathVariable Long id) {
         return departmentService.findById(id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/code/{code}")
     public DepartmentResponse getByCode(@PathVariable String code) {
         return departmentService.findByCode(code);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<DepartmentResponse> create(
             @Valid @RequestBody DepartmentRequest request) {
@@ -53,6 +58,7 @@ public class DepartmentController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public DepartmentResponse update(
             @PathVariable Long id,
@@ -61,6 +67,7 @@ public class DepartmentController {
         return departmentService.update(id, request);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
 

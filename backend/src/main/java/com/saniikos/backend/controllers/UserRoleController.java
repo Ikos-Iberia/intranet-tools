@@ -2,6 +2,7 @@ package com.saniikos.backend.controllers;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.saniikos.backend.dto.userrole.UserRoleRequest;
@@ -20,12 +21,13 @@ public class UserRoleController {
         this.userRoleService = userRoleService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<UserRoleResponse> findAll() {
         return userRoleService.findAll();
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/user/{userId}")
     public List<UserRoleResponse> findByUser(
             @PathVariable Long userId) {
@@ -33,7 +35,7 @@ public class UserRoleController {
         return userRoleService.findByUser(userId);
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/role/{roleId}")
     public List<UserRoleResponse> findByRole(
             @PathVariable Long roleId) {
@@ -41,7 +43,7 @@ public class UserRoleController {
         return userRoleService.findByRole(roleId);
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public UserRoleResponse create(
             @Valid @RequestBody UserRoleRequest request) {
@@ -49,7 +51,7 @@ public class UserRoleController {
         return userRoleService.save(request);
     }
 
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{userId}/{roleId}")
     public void delete(
             @PathVariable Long userId,

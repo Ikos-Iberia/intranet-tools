@@ -6,6 +6,7 @@ import com.saniikos.backend.services.ToolVisibilityService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,26 +21,31 @@ public class ToolVisibilityController {
         this.toolVisibilityService = toolVisibilityService;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<ToolVisibilityResponse> findAll() {
         return toolVisibilityService.findAll();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public ToolVisibilityResponse findById(@PathVariable Long id) {
         return toolVisibilityService.findById(id);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/code/{code}")
     public ToolVisibilityResponse findByCode(@PathVariable String code) {
         return toolVisibilityService.findByCode(code);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ToolVisibilityResponse create(@Valid @RequestBody ToolVisibilityRequest request) {
         return toolVisibilityService.save(request);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ToolVisibilityResponse update(
             @PathVariable Long id,
@@ -48,6 +54,7 @@ public class ToolVisibilityController {
         return toolVisibilityService.update(id, request);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         toolVisibilityService.delete(id);

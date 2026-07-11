@@ -2,6 +2,7 @@ package com.saniikos.backend.controllers;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.saniikos.backend.dto.tooldepartment.ToolDepartmentRequest;
@@ -20,21 +21,25 @@ public class ToolDepartmentController {
         this.toolDepartmentService = toolDepartmentService;
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping
     public List<ToolDepartmentResponse> findAll() {
         return toolDepartmentService.findAll();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/tool/{toolId}")
     public List<ToolDepartmentResponse> findByTool(@PathVariable Long toolId) {
         return toolDepartmentService.findByTool(toolId);
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/department/{departmentId}")
     public List<ToolDepartmentResponse> findByDepartment(@PathVariable Long departmentId) {
         return toolDepartmentService.findByDepartment(departmentId);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ToolDepartmentResponse create(
             @Valid @RequestBody ToolDepartmentRequest request) {
@@ -42,6 +47,7 @@ public class ToolDepartmentController {
         return toolDepartmentService.save(request);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{toolId}/{departmentId}")
     public void delete(
             @PathVariable Long toolId,
