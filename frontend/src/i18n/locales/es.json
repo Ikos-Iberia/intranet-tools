@@ -1,0 +1,12 @@
+{
+  "login": {
+    "title": "Intranet Tools",
+    "subtitle": "Inicia sesión para acceder a la plataforma",
+    "username": "Usuario",
+    "password": "Contraseña",
+    "button": "Iniciar sesión",
+    "loading": "Iniciando sesión...",
+    "emptyFields": "Debes introducir usuario y contraseña.",
+    "invalidCredentials": "Usuario o contraseña incorrectos."
+  }
+}

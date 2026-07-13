@@ -33,6 +33,18 @@ const palette = {
   error: {
     main: "#D32F2F",
   },
+
+  info: {
+    main: "#0288D1",
+  },
+
+  grey: {
+    100: "#F8FAFC",
+    200: "#E5E7EB",
+    300: "#CBD5E1",
+    500: "#64748B",
+    700: "#334155",
+  },
 };
 
 export default palette;

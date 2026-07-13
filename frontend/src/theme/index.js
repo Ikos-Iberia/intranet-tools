@@ -1,33 +1,20 @@
 import { createTheme } from "@mui/material/styles";
 
 import palette from "./palette";
+import typography from "./typography";
 import components from "./components";
+import shadows from "./shadows";
 
 const theme = createTheme({
-
   palette,
-
-  typography: {
-    fontFamily: "Inter, sans-serif",
-
-    h4: {
-      fontWeight: 700,
-    },
-
-    h5: {
-      fontWeight: 700,
-    },
-
-    button: {
-      fontWeight: 600,
-    },
-  },
+  typography,
+  components,
 
   shape: {
     borderRadius: 12,
   },
 
-  components,
+  shadows,
 });
 
 export default theme;
