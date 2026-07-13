@@ -8,5 +8,27 @@
     "loading": "Signing in...",
     "emptyFields": "Please enter your username and password.",
     "invalidCredentials": "Invalid username or password."
+  },
+  "header": {
+    "logout": "Logout"
+  },
+  "navigation": {
+    "general": "General",
+    "dashboard": "Dashboard",
+    "tools": "Tools",
+    "pdf": "PDF Tools",
+    "passwords": "Password Manager",
+    "inventory": "Inventory",
+    "computers": "Computers",
+    "administration": "Administration",
+    "users": "Users",
+    "settings": "Settings",
+    "aboutSection": "Information",
+    "about": "About"
+  },
+  "userMenu": {
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Log out"
   }
 }

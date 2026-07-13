@@ -1,0 +1,18 @@
+Me quedo haciendo el dashboard
+
+Por Hacer:
+    - Breadcrumbs
+
+Por Revisar:
+    - SearchBar
+    - UserMenu
+    - Footer
+    - Header
+    - Sidebar
+    - AppCard
+    - PageTitle
+    - StatCard
+    - navigation.js
+    - i18n -> locales -> json
+    - MainLauout
+    - DashboardPage

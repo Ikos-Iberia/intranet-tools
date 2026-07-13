@@ -8,5 +8,27 @@
     "loading": "Iniciando sesión...",
     "emptyFields": "Debes introducir usuario y contraseña.",
     "invalidCredentials": "Usuario o contraseña incorrectos."
+  },
+  "header": {
+    "logout": "Cerrar sesión"
+  },
+  "navigation": {
+    "general": "General",
+    "dashboard": "Dashboard",
+    "tools": "Herramientas",
+    "pdf": "PDF Tools",
+    "passwords": "Gestor de contraseñas",
+    "inventory": "Inventario",
+    "computers": "Equipos",
+    "administration": "Administración",
+    "users": "Usuarios",
+    "settings": "Configuración",
+    "aboutSection": "Información",
+    "about": "Acerca de"
+  },
+  "userMenu": {
+    "profile": "Mi perfil",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión"
   }
 }
