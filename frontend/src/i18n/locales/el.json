@@ -8,5 +8,27 @@
     "loading": "Σύνδεση...",
     "emptyFields": "Παρακαλώ εισάγετε όνομα χρήστη και κωδικό πρόσβασης.",
     "invalidCredentials": "Λανθασμένο όνομα χρήστη ή κωδικός πρόσβασης."
+  },
+  "header": {
+    "logout": "Αποσύνδεση"
+  },
+  "navigation": {
+    "general": "Γενικά",
+    "dashboard": "Πίνακας ελέγχου",
+    "tools": "Εργαλεία",
+    "pdf": "PDF Tools",
+    "passwords": "Διαχείριση κωδικών",
+    "inventory": "Απογραφή",
+    "computers": "Υπολογιστές",
+    "administration": "Διαχείριση",
+    "users": "Χρήστες",
+    "settings": "Ρυθμίσεις",
+    "aboutSection": "Πληροφορίες",
+    "about": "Σχετικά"
+  },
+  "userMenu": {
+    "profile": "Προφίλ",
+    "settings": "Ρυθμίσεις",
+    "logout": "Αποσύνδεση"
   }
 }
