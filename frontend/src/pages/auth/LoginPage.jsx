@@ -60,6 +60,8 @@ export default function LoginPage() {
         } catch (err) {
             setError(
                 err.response?.data?.error ||
+                err.response?.data?.message ||
+                t("login.invalidCredentials")
                     err.response?.data?.message ||
                     t("login.invalidCredentials")
             );
@@ -67,6 +69,7 @@ export default function LoginPage() {
             setLoading(false);
         }
     };
+ 
 
     return (
         <AuthLayout>
@@ -105,12 +108,26 @@ export default function LoginPage() {
                             />
                         </Box>
 
+                        <Typography
+                            variant="h4"
+                            sx={{
+                                textAlign: "center",
+                                width: "100%",
+                                fontWeight: 700,
+                            }}
+                        >
                         <Typography variant="h4">
                             {t("login.title")}
                         </Typography>
 
                         <Typography
                             color="text.secondary"
+                            sx={{
+                                mt: 1,
+                                textAlign: "center",
+                                width: "100%",
+                                fontWeight: 700,
+                            }}
                             sx={{ mt: 1 }}
                         >
                             {t("login.subtitle")}
