@@ -10,22 +10,26 @@ import "@fontsource/inter";
 
 import App from "./App";
 import theme from "./theme";
+import "./i18n";
 
 import { AuthProvider } from "./context/AuthContext";
+import { HelmetProvider } from "react-helmet-async";
 
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
+    <HelmetProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
 
-      <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </BrowserRouter>
+        <BrowserRouter>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </BrowserRouter>
 
-    </ThemeProvider>
+      </ThemeProvider>
+    </HelmetProvider>
   </React.StrictMode>
 );

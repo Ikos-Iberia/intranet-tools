@@ -1,0 +1,12 @@
+{
+  "login": {
+    "title": "Intranet Tools",
+    "subtitle": "Sign in to access the platform",
+    "username": "Username",
+    "password": "Password",
+    "button": "Sign in",
+    "loading": "Signing in...",
+    "emptyFields": "Please enter your username and password.",
+    "invalidCredentials": "Invalid username or password."
+  }
+}

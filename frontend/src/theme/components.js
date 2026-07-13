@@ -1,11 +1,15 @@
 const components = {
   MuiButton: {
+    defaultProps: {
+      disableElevation: true,
+    },
+
     styleOverrides: {
       root: {
-        borderRadius: 10,
-        textTransform: "none",
+        borderRadius: 12,
+        height: 50,
         fontWeight: 600,
-        height: 44,
+        textTransform: "none",
       },
     },
   },
@@ -13,8 +17,8 @@ const components = {
   MuiCard: {
     styleOverrides: {
       root: {
-        borderRadius: 16,
-        boxShadow: "0 8px 24px rgba(0,0,0,.08)",
+        borderRadius: 20,
+        boxShadow: "0 10px 30px rgba(15,76,129,.12)",
       },
     },
   },
@@ -23,13 +27,38 @@ const components = {
     defaultProps: {
       fullWidth: true,
       variant: "outlined",
+      margin: "normal",
     },
   },
 
   MuiPaper: {
     styleOverrides: {
       root: {
-        borderRadius: 16,
+        borderRadius: 20,
+      },
+    },
+  },
+
+  MuiOutlinedInput: {
+    styleOverrides: {
+      root: {
+        borderRadius: 12,
+
+        "&:hover .MuiOutlinedInput-notchedOutline": {
+          borderColor: "#0F4C81",
+        },
+
+        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+          borderWidth: 2,
+        },
+      },
+    },
+  },
+
+  MuiAlert: {
+    styleOverrides: {
+      root: {
+        borderRadius: 12,
       },
     },
   },
